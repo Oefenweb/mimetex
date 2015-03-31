@@ -84,28 +84,115 @@ Preamble
                   color: black }
       p.warning  { color: red } /* defines  p class=warning */
     </style>
-  <script type="text/javascript">
-    <!--
-    // add/clear text to expression
-    function eqntext(eqn)
-      { var eqnSrc = document.getElementById(eqn).src;
-        var texSrc = eqnSrc.substring(eqnSrc.indexOf('?')+1,eqnSrc.length);
-        addtext(texSrc); }
-    function addtext(text)
-      { cleartext();
-        document.expression.formdata.value += unescape(text);
-        document.expression.formdata.focus(); }
-    function cleartext()
-      { document.expression.formdata.value = "";
-        //document.inlineframe.value = "";
-        document.expression.formdata.focus(); }
-    -->
-  </script>
+    <style type="text/css">
+      a.info{
+        position:relative;
+        z-index:24;
+        /*background-color:#8692A5;*/
+        visibility: inherit;
+        text-decoration: none; }
+      a.info:hover{
+        z-index:25;
+        /*background-color:#999999;
+        color: #FFFF00;*/
+        text-decoration: none; }
+      a.info span{
+        display: none;
+        /*color: #FFFF00;*/ }
+      a.info:hover span{
+        display:block;
+        position:absolute;
+        top:2em;
+        left:2em;
+        /*width:15em;*/
+        border:1px solid #330066;
+        background-color:#FFFF99;
+        color:#660000;
+        text-align: left;
+        font-size: 13px;
+        font-weight: normal;
+        margin: 3px;
+        padding: 6px; }
+      a.info:link {
+        text-decoration: none;
+        /*color: #FFFF00;*/ /*themecolour1%0;*/ }
+      a.info:visited {
+        text-decoration: none;
+        /*color: #FFFF00;*/ /*themecolour1%0;*/ }
+    </style>
+    <script type="text/javascript">
+      <!--
+      // add/clear text to expression
+      function eqntext(eqn)
+        { var eqnSrc = document.getElementById(eqn).src;
+          var texSrc = eqnSrc.substring(eqnSrc.indexOf('?')+1,eqnSrc.length);
+          addtext(texSrc); }
+      function addtext(text)
+        { cleartext();
+          document.expression.formdata.value += unescape(text);
+          document.expression.formdata.focus(); }
+      function cleartext()
+        { document.expression.formdata.value = "";
+          //document.inlineframe.value = "";
+          document.expression.formdata.focus(); }
+      -->
+    </script>
 
-<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-+ javascript from mathtran.org to render <img alt="tex:math expression">
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-<!-- script type="text/javascript"
+  <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  + php functions to use Vertical-Align: info from mimetex
+  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+  <?php
+  //$mimetexurl = "../cgi-bin/mimetex.cgi?";
+  $mimetexurl = "http://www.forkosh.com/mimetex.cgi?";
+  //$mimetexurl = "http://psi2star/cgi-bin/mimetex.cgi?";
+  function verticalalign( $expression ) {
+    global $mimetexurl;
+    // note: curl_init() stops at the first whitespace char in $url argument
+    $expression = ereg_replace(" ","~",$expression); // remove whitespace
+    $url     = $mimetexurl . "\depth~" . $expression;
+    $valign  = "0";
+    $options = array(
+        CURLOPT_RETURNTRANSFER => true,     // return web page
+        CURLOPT_HEADER         => true);    // return headers
+    $ch      = curl_init( $url );
+    //curl_setopt_array( $ch, $options );
+    curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+    curl_setopt( $ch, CURLOPT_HEADER, true );
+    $gif     = curl_exec( $ch );
+    $errno   = curl_errno( $ch );
+    $error   = curl_error( $ch );
+    //$info  = curl_getinfo( $ch );
+    curl_close( $ch );
+    //echo '<br> url= ',$url,'<br>',"\n";
+    //echo '<br> gif=<br>',$gif,'<br>',"\n";
+    if ( $errno == 0 ) {
+      $fields = explode("Vertical-Align:",$gif);
+      $vfield = trim($fields[1]);
+      $fldlen = strspn($vfield,"+-0123456789");
+      $valign = substr($vfield,0,$fldlen); }
+    else {
+      echo 'verticalalign> errno ',$errno,' = ',$error,'<br><br>',"\n"; }
+    return $valign;
+    }
+  function mimetextag( $label, $expression ) {
+    global $mimetexurl;
+    $valign = verticalalign($expression);
+    $url    = $mimetexurl . $expression;
+    //echo ' valign=',$valign,' ',"\n";
+    echo  '<a href="#preview" class="info"><img id="',$label,'" ';
+    echo  ' onclick="eqntext(',"'",$label,"'",')"  ';
+    echo  ' src="',$url,'" ';
+    echo  ' style="Vertical-Align:',$valign,'px"   ';
+    echo  ' alt="" border=0>';
+    echo   '<span>',$expression,'</span>';
+    echo  '</a>', "\n";
+    }
+  ?>
+
+  <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  + javascript from mathtran.org to render <img alt="tex:math expression">
+  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+  <!-- script type="text/javascript"
     src="http://www.mathtran.org/js/mathtran_img.js"></script -->
   </head>
 <body>
@@ -325,10 +412,8 @@ SECTION I.  INTRODUCTION
        immediately generates the corresponding gif image on-the-fly,</nobr><br>
        <nobr> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
           displaying &nbsp;
-          <a href="#preview"><img id="imageI1" onclick="eqntext('imageI1')"
-          src="../cgi-bin/mimetex.cgi?\normalsize
-          f(x)=\int\limits_{-\infty}^xe^{-t^2}dt"
-          alt="" border=0 style="Vertical-Align:-11px"></a>
+          <?php mimetextag('imageI1',
+          '\normalsize f(x)=\int\limits_{-\infty}^xe^{-t^2}dt'); ?>
           &nbsp; wherever you put that tag.</nobr><br>
     <br>
     MimeTeX doesn't need intermediate dvi-to-gif conversion, and it doesn't
@@ -354,17 +439,11 @@ Alternative solutions<font size=5>...</font></a> </h3>
     target="_top">latexrender</a>
     which uses LaTeX to create higher quality images than mimeTeX
     produces.  For comparison,
-    <a href="#preview"><img id="imageI2" onclick="eqntext('imageI2')"
-    src="../cgi-bin/mimetex.cgi?\normalsize
-    f(x)=\int\limits_{-\infty}^xe^{-t^2}dt"
-    alt="" border=0 style="Vertical-Align:-11px"></a>,
+    <?php mimetextag('imageI2',
+    '\small f(x)=\int\limits_{-\infty}^xe^{-t^2}dt'); ?>,
     with arbitrary mean
-    <a href="#preview"><img id="imageI3" onclick="eqntext('imageI3')"
-    src="../cgi-bin/mimetex.cgi?\large\mu" alt="" border=0
-    style="Vertical-Align:-5px"></a> and standard deviation
-    <a href="#preview"><img id="imageI4" onclick="eqntext('imageI4')"
-    src="../cgi-bin/mimetex.cgi?\large\sigma" alt="" border=0
-    style="Vertical-Align:0px"></a>,
+    <?php mimetextag('imageI3','\normalsize\mu'); ?> and standard deviation
+    <?php mimetextag('imageI4','\normalsize\sigma'); ?>,
     and at mimeTeX's next larger font size, looks like </p>
      <center>
       <table>
@@ -379,11 +458,10 @@ Alternative solutions<font size=5>...</font></a> </h3>
 	 alt="" border=0 align=middle> </td>
         <td> &nbsp; </td>
  	<td>
-	 <a href="#preview"><img id="imageI5" onclick="eqntext('imageI5')"
-	 src="../cgi-bin/mimetex.cgi?\large
-         f(x)={\Large\frac1{\sigma\sqrt{2\pi}}}
-	 \int_{\small-\infty}^xe^{-\small\frac{(t-\mu)^2}{2\sigma^2}}dt"
-	 alt="" border=0 align=middle></a> </td>
+	 <?php mimetextag('imageI5',
+	 '\normalsize f(x)={\Large\frac1{\sigma\sqrt{2\pi}}}
+	 \int_{\small-\infty}^xe^{-\small\frac{(t-\mu)^2}{2\sigma^2}}dt'); ?>
+	 </td>
        </tr>
       </table>
      </center>
@@ -882,9 +960,9 @@ EXAMPLES
   <td align="center">
     <a href="#preview">
     <img id="example7" onclick="eqntext('example7')"
-    src="../cgi-bin/mimetex.cgi?\Large\overbrace{a,...,a}^{\text{k a^,s}},
+    src="../cgi-bin/mimetex.cgi?\large\overbrace{a,...,a}^{\text{k a^,s}},
     \underbrace{b,...,b}_{\text{l b^,s}}\hspace{10}
-    \large\underbrace{\overbrace{a...a}^{\text{k a^,s}},
+    \normalsize\underbrace{\overbrace{a...a}^{\text{k a^,s}},
     \overbrace{b...b}^{\text{l b^,s}}}_{\text{k+l elements}}"
     alt="" border=0 align=middle></a> </td>
   <td>
@@ -903,7 +981,7 @@ EXAMPLES
         <td align="left" colspan=2>
          <a href="#preview">
          <img id="example8a" onclick="eqntext('example8a')"
-         src="../cgi-bin/mimetex.cgi?\Large\scr{J}^{i0}=+\frac i2
+         src="../cgi-bin/mimetex.cgi?\large\scr{J}^{i0}=+\frac i2
          \left[\begin{array}{cc}\sigma_i&0\\0&-\sigma_i\end{array}\right]
          \hspace{10}\scr{J}^{ij}=\frac12\varepsilon_{ijk}
          \left[\begin{array}{cc}\sigma_k&0\\0&\sigma_k\end{array}\right]"
@@ -914,7 +992,7 @@ EXAMPLES
         <td align="left">
          <a href="#preview">
          <img id="example8b" onclick="eqntext('example8b')"
-         src="../cgi-bin/mimetex.cgi?\Large A\ =\ \large\left(
+         src="../cgi-bin/mimetex.cgi?\large A\ =\ \normalsize\left(
          \begin{array}{c.cccc}&1&2&\cdots&n\\
          \hdash1&a_{11}&a_{12}&\cdots&a_{1n}\\
          2&a_{21}&a_{22}&\cdots&a_{2n}\\
@@ -935,10 +1013,10 @@ EXAMPLES
         <td align="left" colspan="2">
          <a href="#preview">
          <img id="example9c" onclick="eqntext('example9c')"
-         src="../cgi-bin/mimetex.cgi?\normalsize
-         \left(\large\begin{array}{GC+23}
+         src="../cgi-bin/mimetex.cgi?\large
+         \left(\large\begin{array}{GC+45}
          \varepsilon_x\\\varepsilon_y\\\varepsilon_z\\\gamma_{xy}\\
-         \gamma_{xz}\\\gamma_{yz}\end{array}\right)\ {\Large=}
+         \gamma_{xz}\\\gamma_{yz}\end{array}\right)\ {\large=}
          \ \left[\begin{array}{CC}
          \begin{array}\frac1{E_{\fs{+1}x}}
          &-\frac{\nu_{xy}}{E_{\fs{+1}x}}
@@ -968,7 +1046,7 @@ EXAMPLES
   <td align="center">
     <a href="#preview">
     <img id="example10" onclick="eqntext('example10')"
-    src="../cgi-bin/mimetex.cgi?\Large\left.\begin{eqnarray}
+    src="../cgi-bin/mimetex.cgi?\large\left.\begin{eqnarray}
     x+y+z&=&3\\2y&=&x+z\\2x+y&=&z\end{eqnarray}\right\}"
     alt="" border=0 align=middle></a> </td>
   <td>
@@ -1001,13 +1079,13 @@ using \longxxxarrow[] and \begin{array}
   <td align="left">
     <a href="#preview">
     <img id="example12" onclick="eqntext('example12')"
-    src="../cgi-bin/mimetex.cgi?\Large\hspace{5}\unitlength{1}
+    src="../cgi-bin/mimetex.cgi?\large\hspace{5}\unitlength{1}
     \picture(175,100){ (50,50){\circle(100)}
-    (1,50){\overbrace{\line(46)}^{4$\;\;a}}
+    (1,50){\overbrace{\line(46)}^{3$\;\;a}}
     (52,50){\line(125)} (50,52;115;2){\mid} (52,55){\longleftar[60]}
-    (130,56){\longrightar[35]} (116,58){r} (c85,50;80;2){\bullet}
-    (c85,36){\large-q} (c165,36){\large q}
-    (42,29){\underbrace{\line(32)}_{\small a^2/r\;\;\;}} }"
+    (130,56){\longrightar[35]} (116,58){\small r}
+    (c85,50;80;2){\small\bullet} (c85,36){\small -q} (c165,36){\small q}
+    (42,29){\underbrace{\line(32)}_{\scriptsize a^2/r\;\;\;}} }"
     alt="" border=0 align=middle></a> </td>
   <td valign="middle">
     mimeTeX <a href="#picture">\picture(size){pic_elems}</a>
@@ -1342,7 +1420,7 @@ Vertical alignment<font size=5>...</font></a> </h3>
     <a href="#preview"><img id="imageAV2" onclick="eqntext('imageAV2')"
     src="../cgi-bin/mimetex.cgi?
     \normalsize f(x)=\int\limits_{-\infty}^xe^{-t^2}dt"
-    alt="" border=0 style="Vertical-Align:-11px"></a>
+    alt="" border=0 style="Vertical-Align:-26px"></a>
     that's vertically aligned with your surrounding text.
     Along with several standard 
     <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">
@@ -1352,7 +1430,9 @@ Vertical alignment<font size=5>...</font></a> </h3>
     (usually negative as illustrated) needed for a
     &nbsp; <b>style="Vertical-Align:&nbsp;&#150;<i>nn</i>&nbsp;px"</b>
     &nbsp; attribute in the <b>&lt;img&gt;</b>&nbsp;tag used to
-    render your expression. </p>
+    render your expression. This Vertical-Align:&nbsp;header
+    is obtained by placing the directive &nbsp;<b>\depth</b>&nbsp;
+    anywhere in your expression. </p>
 
 <p> But mimeTeX's special Vertical-Align: header
     is unrecognized and ignored by your browser.  You have to get the
@@ -1366,7 +1446,7 @@ Vertical alignment<font size=5>...</font></a> </h3>
       global $mimetexurl;
       // note: curl_init() stops at the first whitespace char in $url argument
       $expression = ereg_replace(" ","~",$expression); // so remove whitespace
-      $url     = $mimetexurl . $expression;
+      $url     = $mimetexurl . "\depth~" . $expression;
       $valign  = "0";
       $ch      = curl_init( $url );
       curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
@@ -1384,7 +1464,7 @@ Vertical alignment<font size=5>...</font></a> </h3>
    function mimetextag( $expression ) {
       global $mimetexurl;
       $valign = verticalalign($expression);
-      $url    = $mimetexurl . $expression;
+      $url    = $mimetexurl . "\depth~" . $expression;
       echo ' &lt;img src="',$url,'" ';
       echo ' style="Vertical-Align:',$valign,'px" ';
       echo ' alt="" border=0&gt;', "\n";
@@ -1397,25 +1477,31 @@ Vertical alignment<font size=5>...</font></a> </h3>
     <a href="#preview"><img id="imageAV5" onclick="eqntext('imageAV5')"
     src="../cgi-bin/mimetex.cgi?
     \normalsize\frac12\left(a^2+b^2\right)"
-    alt="" border=0 style="Vertical-Align:-5px"></a>
-    correctly aligned.  <!-- Besides making you escape backslashes
+    alt="" border=0 style="Vertical-Align:-7px"></a>
+    correctly aligned. Note that the php code automatically
+    prepends &nbsp;<b>\depth</b>&nbsp; to your expression for you.
+    <!-- Besides making you escape backslashes
     (each&nbsp;&#092;&nbsp;must be written&nbsp;&#092;&#092;), -->
-    This code calls mimeTeX twice to render each expression,
-    once to get the Vertical-Align: header and build an
-    &lt;img&gt; tag, and then again to render that tag.
+    (Also note that this code calls mimeTeX twice to render each
+    expression, once to get the Vertical-Align: header and build
+    an &lt;img&gt; tag, and then again to render that tag.
     If you're a good php programmer and write better code,
-    please email me a copy. </p>
+    please email me a copy.) </p>
 
 <p> If you're using mimeTeX's
     &nbsp; <b>-DCACHEPATH=\&quot;<i>path</i>/\&quot;</b> &nbsp;
-    <a href="#options">compile&nbsp;option</a>, prefix your
+    <a href="#options">compile&nbsp;option</a>, you can request
+    that all images be cached with Vertical-Align:&nbsp;headers,
+    whether or not they contain the \depth directive. Prefix your
     <b><i>path</i>/</b> with a leading&nbsp;<b>&#037;</b> and write &nbsp;
     <b>-DCACHEPATH=\&quot;&#037;<i>path</i>/\&quot;</b> &nbsp; instead.
     That leading&nbsp;<b>&#037;</b> won't become part of your cache
     directory's <b><i>path</i>/</b>, but it will signal mimeTeX
-    to cache headers along with each image.
-    Otherwise, the Vertical-Align: information is lost,
-    and attempts to align cached images will fail. </p>
+    to cache headers along with each image. (In this case,
+    the directive &nbsp;<b>\nodepth</b>&nbsp; suppresses
+    mimeTeX's header caching for that image.)
+    <!-- Otherwise, the Vertical-Align: information is lost,
+    and attempts to align cached images will fail. --> </p>
 
 
 <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3755,7 +3841,7 @@ Raise&nbsp;and&nbsp;rotate, Compose, Abbreviations, etc. &nbsp; </a> </h2>
         renders &nbsp;
         <a href="#preview"><img id="magbox5" onclick="eqntext('magbox5')"
         src="../cgi-bin/mimetex.cgi?\LARGE f(x)={\magbox{2}{x}}^2"
-        alt="" border=0 align="absmiddle"></a>.<br>
+        alt="" border=0 align="absmiddle"></a>.</nobr><br>
      </p>
 
 <h3> <a name="abbreviations">Abbreviations<font size=5>...</font></a> </h3>
@@ -4656,24 +4742,36 @@ SECTION IV.  APPENDICES
 
 <p> One small problem with the above procedure is that the default
   &nbsp; gftype &nbsp; program supplied with most TeX distributions
-  can't emit the long lines needed to display mimeTeX's larger font
-  sizes.  You'll need to compile your own version from source.
+  can't emit the long lines needed to display mimeTeX's larger font sizes.
+  <a href="http://www.forkosh.com/gftype.zip"
+  target="_top">gftype.zip</a>&nbsp;contains a statically linked linux
+  executable modified to emit the necessary long lines.
+  It may or may not run on your intel linux machine.
+  If not, you'll need to compile your own version from source.
   The following instructions are for Unix/Linux: <br> &nbsp; &nbsp;
   &nbsp; &nbsp; First, download both 
-  <a href="http://www.ctan.org/tex-archive/systems/web2c/web-7.5.3.tar.gz"
+  <!-- http://www.ctan.org/tex-archive/systems/web2c/web-7.5.3.tar.gz -->
+  <a href="http://www.forkosh.com/web-7.5.3.tar.gz"
   target="_top">web-7.5.3.tar.gz</a> and
-  <a href="http://www.ctan.org/tex-archive/systems/web2c/web2c-7.5.3.tar.gz"
-  target="_top">web2c-7.5.3.tar.gz</a>,
-  or more recent versions.  Then &nbsp; untar &nbsp; them both,
+  <!-- http://www.ctan.org/tex-archive/systems/web2c/web2c-7.5.3.tar.gz -->
+  <a href="http://www.forkosh.com/web2c-7.5.3.tar.gz"
+  target="_top">web2c-7.5.3.tar.gz</a>
+  <!-- or more recent versions. --> (note: these files are no longer
+  explicitly archived by&nbsp;<a href="http://www.ctan.org/"
+  target="_top">ctan</a>, having been superceded
+  by&nbsp;<a href="http://www.ctan.org/tex-archive/systems/texlive"
+  target="_top">texlive</a>&nbsp;sources, so the preceding two links
+  point to copies kept on my site, www.forkosh.com).
+  Then &nbsp; untar &nbsp; both gzipped tar files,
   &nbsp; cd&nbsp;web2c-7.5.3/ &nbsp; and run &nbsp; ./configure &nbsp;
   and &nbsp; make &nbsp; in the usual way (make may fail before
   completion if you don't have all needed fonts installed,
   but it will create and compile gftype.c before failing).  Now edit
-  &nbsp; texk/web2c/gftype.c&nbsp; and notice two lines very near the top
-  that &nbsp; #define&nbsp;maxrow&nbsp;(79) &nbsp and similarly for maxcol.
-  Change both 79's to 1024, and then re-run make.  The new &nbsp;
-  texk/web2c/gftype &nbsp; executable image can emit the long
-  lines needed for mimeTeX's larger font sizes. </p>
+  &nbsp; texk/web2c/gftype.c&nbsp; and notice three lines very near the top
+  that &nbsp; #define&nbsp;maxrow&nbsp;(79) &nbsp and similarly for
+  maxcol and linelength. Change all three 79's to 1024, and
+  then re-run make. The new &nbsp; texk/web2c/gftype &nbsp; executable
+  image can emit the long lines needed for mimeTeX's larger font sizes. </p>
 
 <p> Finally, the Unix/Linux bash shell script
   <a href="http://www.forkosh.com/texfonts.sh"

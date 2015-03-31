@@ -331,8 +331,10 @@ STATIC	struct {char *name; int family; int istext; int class;}
 /* ---
  * additional font attributes (only size is implemented)
  * ----------------------------------------------------- */
-/* --- font sizes 0-7 = tiny,small,normal,large,Large,LARGE,huge,Huge --- */
-#define	LARGESTSIZE	(7)
+/* --- font sizes 0-10 = tiny=0,scriptsize=1,footnotesize=2,small=3,
+       normalsize=4,large=5,Large=6,LARGE=7,huge=8,Huge=9,HUGE=10 --- */
+/* --- (mimeTeX adds HUGE) --- */
+#define	LARGESTSIZE	(10)
 #ifdef DEFAULTSIZE
   #ifndef NORMALSIZE
     #define NORMALSIZE (DEFAULTSIZE)
@@ -340,12 +342,14 @@ STATIC	struct {char *name; int family; int istext; int class;}
 #endif
 #ifndef	NORMALSIZE
   /*#define NORMALSIZE	(2)*/
-  #define NORMALSIZE	(3)
+  /*#define NORMALSIZE	(3)*/
+  #define NORMALSIZE	(4)
 #endif
 #ifndef	DISPLAYSIZE
   /* --- automatically sets scripts in \displaystyle when fontsize>= --- */
   /*#define DISPLAYSIZE	(NORMALSIZE+1)*/
-  #define DISPLAYSIZE	(3)
+  /*#define DISPLAYSIZE	(3)*/
+  #define DISPLAYSIZE	(4)
 #endif
 
 /* ---
@@ -453,21 +457,35 @@ STATIC	fontfamily aafonttable[]
 #ifdef INITVALS
  =
  {/* -----------------------------------------------------------------------------------------
-    family     size=0,        1,        2,        3,        4,        5,        6,        7
+    family     size=0,        1,        2,        3,        4,        5,
+                    6,        7,        8,        9,	   10
   ----------------------------------------------------------------------------------------- */
-  {   CMR10,{   cmr83,   cmr100,   cmr118,   cmr131,   cmr160,   cmr180,   cmr210,   cmr250}},
-  {  CMMI10,{  cmmi83,  cmmi100,  cmmi118,  cmmi131,  cmmi160,  cmmi180,  cmmi210,  cmmi250}},
-  { CMMIB10,{ cmmib83, cmmib100, cmmib118, cmmib131, cmmib160, cmmib180, cmmib210, cmmib250}},
-  {  CMSY10,{  cmsy83,  cmsy100,  cmsy118,  cmsy131,  cmsy160,  cmsy180,  cmsy210,  cmsy250}},
-  {  CMEX10,{  cmex83,  cmex100,  cmex118,  cmex131,  cmex160,  cmex180,  cmex210,  cmex250}},
-  {  RSFS10,{  rsfs83,  rsfs100,  rsfs118,  rsfs131,  rsfs160,  rsfs180,  rsfs210,  rsfs250}},
-  { BBOLD10,{ bbold83, bbold100, bbold118, bbold131, bbold160, bbold180, bbold210, bbold250}},
-  {STMARY10,{stmary83,stmary100,stmary118,stmary131,stmary160,stmary180,stmary210,stmary250}},
-  {   CYR10,{ wncyr83, wncyr100, wncyr118, wncyr131, wncyr160, wncyr180, wncyr210, wncyr250}},
-  {CMMI10GR,{  cmmi83,  cmmi100,  cmmi118,  cmmi131,  cmmi160,  cmmi180,  cmmi210,  cmmi250}},
-  {CMMI10BGR,{cmmib83, cmmib100, cmmib118, cmmib131, cmmib160, cmmib180, cmmib210, cmmib250}},
-  {BBOLD10GR,{bbold83, bbold100, bbold118, bbold131, bbold160, bbold180, bbold210, bbold250}},
-  {    -999,{    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL}}
+  {   CMR10,{   cmr83,   cmr100,   cmr118,   cmr131,   cmr160,   cmr180,
+               cmr210,   cmr250,   cmr325,   cmr450,   cmr600}},
+  {  CMMI10,{  cmmi83,  cmmi100,  cmmi118,  cmmi131,  cmmi160,  cmmi180,
+              cmmi210,  cmmi250,  cmmi325,  cmmi450,  cmmi600}},
+  { CMMIB10,{ cmmib83, cmmib100, cmmib118, cmmib131, cmmib160, cmmib180,
+             cmmib210, cmmib250, cmmib325, cmmib450, cmmib600}},
+  {  CMSY10,{  cmsy83,  cmsy100,  cmsy118,  cmsy131,  cmsy160,  cmsy180,
+              cmsy210,  cmsy250,  cmsy325,  cmsy450,  cmsy600}},
+  {  CMEX10,{  cmex83,  cmex100,  cmex118,  cmex131,  cmex160,  cmex180,
+              cmex210,  cmex250,  cmex325,  cmex450,  cmex600}},
+  {  RSFS10,{  rsfs83,  rsfs100,  rsfs118,  rsfs131,  rsfs160,  rsfs180,
+              rsfs210,  rsfs250,  rsfs325,  rsfs450,  rsfs600}},
+  { BBOLD10,{ bbold83, bbold100, bbold118, bbold131, bbold160, bbold180,
+             bbold210, bbold250, bbold325, bbold450, bbold600}},
+  {STMARY10,{stmary83,stmary100,stmary118,stmary131,stmary160,stmary180,
+            stmary210,stmary250,stmary325,stmary450,stmary600}},
+  {   CYR10,{ wncyr83, wncyr100, wncyr118, wncyr131, wncyr160, wncyr180,
+             wncyr210, wncyr250, wncyr325, wncyr450, wncyr600}},
+  {CMMI10GR,{  cmmi83,  cmmi100,  cmmi118,  cmmi131,  cmmi160,  cmmi180,
+              cmmi210,  cmmi250,  cmmi325,  cmmi450,  cmmi600}},
+  {CMMI10BGR,{cmmib83, cmmib100, cmmib118, cmmib131, cmmib160, cmmib180,
+             cmmib210, cmmib250, cmmib325, cmmib450, cmmib600}},
+  {BBOLD10GR,{bbold83, bbold100, bbold118, bbold131, bbold160, bbold180,
+             bbold210, bbold250, bbold325, bbold450, bbold600}},
+  {    -999,{    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
+                 NULL,     NULL,     NULL,     NULL,     NULL}}
  }
 #endif
  ; /* --- end-of-aafonttable[] --- */
@@ -478,21 +496,35 @@ STATIC	fontfamily aafonttable[]
  #ifdef INITVALS
   =
   {/* -----------------------------------------------------------------------------------------
-    family     size=0,        1,        2,        3,        4,        5,        6,        7
+    family     size=0,        1,        2,        3,        4,        5,
+                    6,        7,        8,        9,       10
    ----------------------------------------------------------------------------------------- */
-   {  CMR10,{  cmr250,  cmr1200,  cmr1200,  cmr1200,  cmr1200,  cmr1200,  cmr1200,  cmr1200}},
-   { CMMI10,{ cmmi250,  cmmi100,  cmmi118,  cmmi131,  cmmi160,  cmmi180,  cmmi210,  cmmi250}},
-   {CMMIB10,{cmmib250, cmmib100, cmmib118, cmmib131, cmmib160, cmmib180, cmmib210, cmmib250}},
-   { CMSY10,{ cmsy250,  cmsy100,  cmsy118,  cmsy131,  cmsy160,  cmsy180,  cmsy210,  cmsy250}},
-   { CMEX10,{ cmex250,  cmex100,  cmex118,  cmex131,  cmex160,  cmex180,  cmex210,  cmex250}},
-   { RSFS10,{ rsfs250,  rsfs100,  rsfs118,  rsfs131,  rsfs160,  rsfs180,  rsfs210,  rsfs250}},
-  { BBOLD10,{bbold250, bbold100, bbold118, bbold131, bbold160, bbold180, bbold210, bbold250}},
- {STMARY10,{stmary250,stmary100,stmary118,stmary131,stmary160,stmary180,stmary210,stmary250}},
-  {   CYR10,{wncyr250, wncyr100, wncyr118, wncyr131, wncyr160, wncyr180, wncyr210, wncyr250}},
-  {CMMI10GR,{ cmmi250,  cmmi100,  cmmi118,  cmmi131,  cmmi160,  cmmi180,  cmmi210,  cmmi250}},
-  {CMMI10BGR,{cmmib250,cmmib100, cmmib118, cmmib131, cmmib160, cmmib180, cmmib210, cmmib250}},
-  {BBOLD10GR,{bbold250,bbold100, bbold118, bbold131, bbold160, bbold180, bbold210, bbold250}},
-   {   -999,{    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL}}
+   {  CMR10,{  cmr250,  cmr1200,  cmr1200,  cmr1200,  cmr1200,  cmr1200,
+              cmr1200,  cmr1200,  cmr1200,  cmr1200,  cmr1200}},
+   { CMMI10,{ cmmi250,  cmmi100,  cmmi118,  cmmi131,  cmmi160,  cmmi180,
+              cmmi210,  cmmi250,  cmmi325,  cmmi450,  cmmi600}},
+   {CMMIB10,{cmmib250, cmmib100, cmmib118, cmmib131, cmmib160, cmmib180,
+             cmmib210, cmmib250, cmmib325, cmmib450, cmmib600}},
+   { CMSY10,{ cmsy250,  cmsy100,  cmsy118,  cmsy131,  cmsy160,  cmsy180,
+              cmsy210,  cmsy250,  cmsy325,  cmsy450,  cmsy600}},
+   { CMEX10,{ cmex250,  cmex100,  cmex118,  cmex131,  cmex160,  cmex180,
+              cmex210,  cmex250,  cmex325,  cmex450,  cmex600}},
+   { RSFS10,{ rsfs250,  rsfs100,  rsfs118,  rsfs131,  rsfs160,  rsfs180,
+              rsfs210,  rsfs250,  rsfs325,  rsfs450,  rsfs600}},
+  { BBOLD10,{bbold250, bbold100, bbold118, bbold131, bbold160, bbold180,
+             bbold210, bbold250, bbold325, bbold450, bbold600}},
+ {STMARY10,{stmary250,stmary100,stmary118,stmary131,stmary160,stmary180,
+            stmary210,stmary250,stmary325,stmary450,stmary600}},
+  {   CYR10,{wncyr250, wncyr100, wncyr118, wncyr131, wncyr160, wncyr180,
+             wncyr210, wncyr250, wncyr325, wncyr450, wncyr600}},
+  {CMMI10GR,{ cmmi250,  cmmi100,  cmmi118,  cmmi131,  cmmi160,  cmmi180,
+              cmmi210,  cmmi250,  cmmi325,  cmmi450,  cmmi600}},
+ {CMMI10BGR,{cmmib250, cmmib100, cmmib118, cmmib131, cmmib160, cmmib180,
+             cmmib210, cmmib250, cmmib325, cmmib450, cmmib600}},
+ {BBOLD10GR,{bbold250, bbold100, bbold118, bbold131, bbold160, bbold180,
+             bbold210, bbold250, bbold325, bbold450, bbold600}},
+   {   -999,{    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
+                 NULL,     NULL,     NULL,     NULL,     NULL}}
   }
  #endif
   ; /* --- end-of-ssfonttable[] --- */
@@ -607,6 +639,8 @@ subraster *rastnoop();			/* handle \escape's to be flushed */
 #define	ISSTRING	(11)		/* set ascii string mode */
 #define	ISSMASH		(12)		/* set (minimum) "smash" margin */
 #define	ISCONTENTTYPE	(13)		/*enable/disable Content-type lines*/
+#define	ISCONTENTCACHED	(14)		/* write Content-type to cache file*/
+#define	ISPBMPGM	(15)		/* write pbm/pgm (instead of gif) */
 
 /* ---
  * mathchardefs for symbols recognized by mimetex
@@ -737,16 +771,16 @@ STATIC	mathchardef symtable[]
     { "\\textstyle", ISDISPLAYSTYLE,   0,NOVALUE, (HANDLER)(rastflags) },
     { "\\displaysize",ISDISPLAYSIZE,NOVALUE,NOVALUE,(HANDLER)(rastflags)},
     { "\\tiny",      ISFONTSIZE,       0,NOVALUE, (HANDLER)(rastflags) },
-    { "\\scriptsize",ISFONTSIZE,       0,NOVALUE, (HANDLER)(rastflags) },
-    { "\\footnotesize",ISFONTSIZE,     1,NOVALUE, (HANDLER)(rastflags) },
-    { "\\small",     ISFONTSIZE,       1,NOVALUE, (HANDLER)(rastflags) },
-    { "\\normalsize",ISFONTSIZE,       2,NOVALUE, (HANDLER)(rastflags) },
-    { "\\large",     ISFONTSIZE,       3,NOVALUE, (HANDLER)(rastflags) },
-    { "\\Large",     ISFONTSIZE,       4,NOVALUE, (HANDLER)(rastflags) },
-    { "\\LARGE",     ISFONTSIZE,       5,NOVALUE, (HANDLER)(rastflags) },
-    { "\\huge",      ISFONTSIZE,       6,NOVALUE, (HANDLER)(rastflags) },
-    { "\\Huge",      ISFONTSIZE,       7,NOVALUE, (HANDLER)(rastflags) },
-    { "\\HUGE",      ISFONTSIZE,       7,NOVALUE, (HANDLER)(rastflags) },
+    { "\\scriptsize",ISFONTSIZE,       1,NOVALUE, (HANDLER)(rastflags) },
+    { "\\footnotesize",ISFONTSIZE,     2,NOVALUE, (HANDLER)(rastflags) },
+    { "\\small",     ISFONTSIZE,       3,NOVALUE, (HANDLER)(rastflags) },
+    { "\\normalsize",ISFONTSIZE,       4,NOVALUE, (HANDLER)(rastflags) },
+    { "\\large",     ISFONTSIZE,       5,NOVALUE, (HANDLER)(rastflags) },
+    { "\\Large",     ISFONTSIZE,       6,NOVALUE, (HANDLER)(rastflags) },
+    { "\\LARGE",     ISFONTSIZE,       7,NOVALUE, (HANDLER)(rastflags) },
+    { "\\huge",      ISFONTSIZE,       8,NOVALUE, (HANDLER)(rastflags) },
+    { "\\Huge",      ISFONTSIZE,       9,NOVALUE, (HANDLER)(rastflags) },
+    { "\\HUGE",      ISFONTSIZE,      10,NOVALUE, (HANDLER)(rastflags) },
     { "\\fontsize",  ISFONTSIZE, NOVALUE,NOVALUE, (HANDLER)(rastflags) },
     { "\\fs",        ISFONTSIZE, NOVALUE,NOVALUE, (HANDLER)(rastflags) },
     { "\\magstep",   ISMAGSTEP,  NOVALUE,NOVALUE, (HANDLER)(rastflags) },
@@ -765,8 +799,11 @@ STATIC	mathchardef symtable[]
     { "\\lowpass",    ISSUPER,         0,NOVALUE, (HANDLER)(rastflags) },
     { "\\aaalg",ISAAALGORITHM,   NOVALUE,NOVALUE, (HANDLER)(rastflags) },
     { "\\pnmparams",PNMPARAMS,   NOVALUE,NOVALUE, (HANDLER)(rastflags) },
+    { "\\pbmpgm",    ISPBMPGM,   NOVALUE,NOVALUE, (HANDLER)(rastflags) },
     { "\\gammacorrection",ISGAMMA,NOVALUE,NOVALUE,(HANDLER)(rastflags) },
     { "\\nocontenttype",ISCONTENTTYPE, 0,NOVALUE, (HANDLER)(rastflags) },
+    { "\\nodepth",   ISCONTENTCACHED,  0,NOVALUE, (HANDLER)(rastflags) },
+    { "\\depth",     ISCONTENTCACHED,  1,NOVALUE, (HANDLER)(rastflags) },
     { "\\opaque",    ISOPAQUE,         0,NOVALUE, (HANDLER)(rastflags) },
     { "\\transparent",ISOPAQUE,        1,NOVALUE, (HANDLER)(rastflags) },
     { "\\squash",    ISSMASH,          3,1,       (HANDLER)(rastflags) },
