@@ -1,10 +1,10 @@
 
  --------------------------------------------------------------------------
- October 2, 2004                                               Version 1.50
+ August 24, 2011                                               Version 1.72
 
                   m i m e T e X   R e a d m e   F i l e
 
- Copyright(c) 2002-2004, John Forkosh Associates, Inc. All rights reserved.
+ Copyright(c) 2002-2011, John Forkosh Associates, Inc. All rights reserved.
  --------------------------------------------------------------------------
 
                             by: John Forkosh
@@ -12,7 +12,7 @@
 
           This file is part of mimeTeX, which is free software.
           You may redistribute and/or modify it under the terms
-          of the GNU General Public License, version 2 or later,
+          of the GNU General Public License, version 3 or later,
           as published by the Free Software Foundation. See
                    http://www.gnu.org/licenses/gpl.html
 
@@ -91,7 +91,7 @@ III.  COMPILATION AND INSTALLATION
   Your working directory should now contain
        mimetex.zip    your gnu zipped mimeTeX distribution containing...
        README         this file (see mimetex.html for demo/tutorial)
-       LICENSE        GPL license, under which you may use mimeTeX
+       COPYING        GPL license, under which you may use mimeTeX
        mimetex.c      mimeTeX source program and all required functions
        mimetex.h      header file for mimetex.c (and for gfuntype.c)
        gfuntype.c     parses output from  gftype -i  and writes bitmap data
@@ -176,6 +176,12 @@ III.  COMPILATION AND INSTALLATION
 
 IV.  REVISION HISTORY
 ------------------------------------------------------------------------
+  A more detailed account of mimeTeX's revision history
+  is maintained at  http://www.forkosh.com/mimetexchangelog.html
+  ---
+  08/24/11  J.Forkosh      version 1.72 released.
+  09/06/08  J.Forkosh      version 1.70 released.
+  11/30/04  J.Forkosh      version 1.60 released
   10/02/04  J.Forkosh      version 1.50 released on CTAN with various new
                            features and fixes, and updated documentation.
   07/18/04  J.Forkosh      version 1.40 re-released on CTAN with minor
@@ -207,9 +213,5 @@ V.  CONCLUDING REMARKS
   I hope you find mimeTeX useful.  If so, a contribution to your
   country's TeX Users Group, or to the GNU project, is suggested,
   especially if you're a company that's currently profitable.
-  
-  If you also like mimeTeX's source, I'm an independent contractor
-  incorporated in the US as John Forkosh Associates, Inc.  A resume
-  is at www.forkosh.com or email john@forkosh.com
 ========================= END-OF-FILE README ===========================
 
